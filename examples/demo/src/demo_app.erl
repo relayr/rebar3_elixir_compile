@@ -8,7 +8,7 @@
 -behaviour(application).
 
 %% Application callbacks
--export([start/2, stop/1, fake_city/0]).
+-export([start/2, stop/1, plug/0]).
 
 %%====================================================================
 %% API
@@ -17,8 +17,8 @@
 start(_StartType, _StartArgs) ->
     demo_sup:start_link().
 
-fake_city() ->
-    'Elixir.Faker.Address':city().
+plug() ->
+    'Elixir.Plug':module_info().
 
 %%--------------------------------------------------------------------
 stop(_State) ->
