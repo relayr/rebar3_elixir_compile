@@ -28,7 +28,14 @@ start_link() ->
 
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
-    {ok, { {one_for_all, 0, 1}, []} }.
+    {ok, { {one_for_all, 0, 1}, [
+        'Elixir.Plug.Adapters.Cowboy2':child_spec([
+            {scheme, http},
+            {plug, 'Elixir.PlugDemo.Router'},
+            {options, [{port, 4002}]}
+        ])
+      ]}
+    }.
 
 %%====================================================================
 %% Internal functions
