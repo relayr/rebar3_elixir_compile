@@ -86,7 +86,7 @@ fetch({elixir, Name_, Vsn_}, CDN) ->
               repo_url => list_to_binary(CDN)
             },
             case hex_repo:get_tarball(Config, Name, Vsn) of
-                {ok, Binary, _} ->
+                {ok, {200, _, Binary}} ->
                     {ok, Contents} = extract(Binary),
                     ok = erl_tar:extract({binary, Contents}, [{cwd, Dir}, compressed]);
                 _ ->
