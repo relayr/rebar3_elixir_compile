@@ -87,19 +87,18 @@ fetch({elixir, Name_, Vsn_}, CDN) ->
             },
             case hex_repo:get_tarball(Config, Name, Vsn) of
                 {ok, {200, _, Binary}} ->
-                    {ok, Contents} = extract(Binary),
-                    ok = erl_tar:extract({binary, Contents}, [{cwd, Dir}, compressed]);
+                    case hex_tarball:unpack(Binary, Dir) of
+                        {ok, _, _} ->
+                            ok;
+                        Error ->
+                            rebar_api:console("Error: Unable to unpack tarball ~p ~p: ~p~n", [Name, Vsn, Error])
+                    end;
                 _ ->
                     rebar_api:console("Error: Unable to fetch package ~p ~p~n", [Name, Vsn])
             end;
         true ->
             rebar_api:console("Dependency ~s already exists~n", [Name])
     end.
-
-extract(Binary) ->
-    {ok, Files} = erl_tar:extract({binary, Binary}, [memory]),
-    {"contents.tar.gz", Contents} = lists:keyfind("contents.tar.gz", 1, Files),
-    {ok, Contents}.
 
 user_agent() ->
     AppName = rebar3_elixir_compile,
